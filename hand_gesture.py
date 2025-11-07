@@ -91,11 +91,11 @@ def recognize_gesture(hand_landmarks):
     pinky_up = fingers_up[4]
 
     if index_up and not middle_up and not ring_up and not pinky_up:
-        return "AHA!"  # <-- DIUBAH
+        return "AHA!"  
 
     if not index_up and not middle_up and not ring_up and not pinky_up:
         if (lm[8].y > lm[6].y) and (lm[8].y < lm[5].y):
-            return "THINKING"  # <-- DIUBAH
+            return "THINKING"  
 
         return "FIST"
 
@@ -137,28 +137,28 @@ def main():
         )
         monkey_img = create_placeholder_image(
             "THINKING", color=(200, 0, 200)
-        )  # <-- DIUBAH
+        )  
     if monkey_img_1 is None:
         print(
             "Peringatan: 'monkey_reaction_1.jpg' tidak ditemukan. Membuat placeholder 100x100."
         )
         monkey_img_1 = create_placeholder_image(
             "AHA!", color=(0, 200, 50)
-        )  # <-- DIUBAH
+        )  
     if monkey_img_2 is None:
         print(
             "Peringatan: 'monkey_reaction_2.jpg' tidak ditemukan. Membuat placeholder 100x100."
         )
         monkey_img_2 = create_placeholder_image(
             "NO_REACTION", color=(150, 150, 150)
-        )  # <-- DIUBAH
+        )  
     if monkey_img_3 is None:
         print(
             "Peringatan: 'monkey_reaction_3.jpg' tidak ditemukan. Membuat placeholder 100x100."
         )
         monkey_img_3 = create_placeholder_image(
             "SHOCK", color=(200, 50, 0)
-        )  # <-- DIUBAH
+        )  
 
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
@@ -200,13 +200,13 @@ def main():
 
             current_gesture = "NONE"
             if num_hands_detected == 0:
-                current_gesture = "NO_REACTION"  # <-- DIUBAH
+                current_gesture = "NO_REACTION"  
             elif detected_gestures.count("FIST") >= 2:
-                current_gesture = "SHOCK"  # <-- DIUBAH
+                current_gesture = "SHOCK"  
             elif "AHA!" in detected_gestures:
-                current_gesture = "AHA!"  # <-- DIUBAH
+                current_gesture = "AHA!"  
             elif "THINKING" in detected_gestures:
-                current_gesture = "THINKING"  # <-- DIUBAH
+                current_gesture = "THINKING"  
             elif "FIST" in detected_gestures:
                 current_gesture = "FIST"
 
@@ -216,13 +216,13 @@ def main():
             pos_x = frame_width - overlay_width - 20
             pos_y = 20
 
-            if current_gesture == "SHOCK":  # <-- DIUBAH
+            if current_gesture == "SHOCK":  
                 frame_bgr = overlay_image_alpha(frame_bgr, monkey_img_3, pos_x, pos_y)
-            elif current_gesture == "NO_REACTION":  # <-- DIUBAH
+            elif current_gesture == "NO_REACTION":  
                 frame_bgr = overlay_image_alpha(frame_bgr, monkey_img_2, pos_x, pos_y)
-            elif current_gesture == "AHA!":  # <-- DIUBAH
+            elif current_gesture == "AHA!":  
                 frame_bgr = overlay_image_alpha(frame_bgr, monkey_img_1, pos_x, pos_y)
-            elif current_gesture == "THINKING":  # <-- DIUBAH
+            elif current_gesture == "THINKING":  
                 frame_bgr = overlay_image_alpha(frame_bgr, monkey_img, pos_x, pos_y)
 
             cv2.putText(
