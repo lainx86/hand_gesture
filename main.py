@@ -1,105 +1,13 @@
-import os
-
 import cv2
 import mediapipe as mp
 import numpy as np
+import os
+
+from image_utils import create_placeholder_image, overlay_image_alpha
+from gesture_detector import recognize_gesture
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
-
-
-def create_placeholder_image(text, size=(100, 100), color=(0, 100, 0)):
-    image = np.zeros((size[1], size[0], 4), dtype=np.uint8)
-    image[:, :, 0] = color[0]
-    image[:, :, 1] = color[1]
-    image[:, :, 2] = color[2]
-    image[:, :, 3] = 150
-
-    font = cv2.FONT_HERSHEY_SIMPLEX
-    font_scale = 0.6
-    thickness = 1
-    (text_w, text_h), _ = cv2.getTextSize(text, font, font_scale, thickness)
-    text_x = (size[0] - text_w) // 2
-    text_y = (size[1] + text_h) // 2
-
-    cv2.putText(
-        image,
-        text,
-        (text_x, text_y),
-        font,
-        font_scale,
-        (255, 255, 255),
-        thickness,
-        cv2.LINE_AA,
-    )
-
-    return image
-
-
-def overlay_image_alpha(img_bg, img_overlay, x, y):
-    try:
-        h_bg, w_bg = img_bg.shape[:2]
-        h_ol, w_ol = img_overlay.shape[:2]
-
-        x1, y1 = max(0, x), max(0, y)
-        x2, y2 = min(w_bg, x + w_ol), min(h_bg, y + h_ol)
-
-        w_roi = x2 - x1
-        h_roi = y2 - y1
-
-        if w_roi <= 0 or h_roi <= 0:
-            return img_bg
-
-        roi_bg = img_bg[y1:y2, x1:x2]
-        roi_ol = img_overlay[0:h_roi, 0:w_roi]
-
-        if roi_ol.shape[2] == 4:
-            alpha = roi_ol[:, :, 3] / 255.0
-            alpha_mask = np.dstack([alpha] * 3)
-            overlay_bgr = roi_ol[:, :, :3]
-            composite = (overlay_bgr * alpha_mask) + (roi_bg * (1.0 - alpha_mask))
-            img_bg[y1:y2, x1:x2] = composite.astype(np.uint8)
-        elif roi_ol.shape[2] == 3:
-            img_bg[y1:y2, x1:x2] = roi_ol
-
-        return img_bg
-
-    except Exception as e:
-        print(f"Error saat overlay gambar: {e}")
-        return img_bg
-
-
-def recognize_gesture(hand_landmarks):
-    lm = hand_landmarks.landmark
-    fingers_up = [False] * 5
-
-    tip_ids = [8, 12, 16, 20]
-    pip_ids = [6, 10, 14, 18]
-    mcp_ids = [5, 9, 13, 17]
-
-    for i in range(4):
-        if lm[tip_ids[i]].y < lm[pip_ids[i]].y:
-            fingers_up[i + 1] = True
-
-    if lm[4].y < lm[3].y and lm[4].y < lm[2].y:
-        fingers_up[0] = True
-
-    thumb_up = fingers_up[0]
-    index_up = fingers_up[1]
-    middle_up = fingers_up[2]
-    ring_up = fingers_up[3]
-    pinky_up = fingers_up[4]
-
-    if index_up and not middle_up and not ring_up and not pinky_up:
-        return "AHA!"  
-
-    if not index_up and not middle_up and not ring_up and not pinky_up:
-        if (lm[8].y > lm[6].y) and (lm[8].y < lm[5].y):
-            return "THINKING"  
-
-        return "FIST"
-
-    return "NONE"
 
 
 def main():
@@ -137,28 +45,28 @@ def main():
         )
         monkey_img = create_placeholder_image(
             "THINKING", color=(200, 0, 200)
-        )  
+        )
     if monkey_img_1 is None:
         print(
             "Peringatan: 'monkey_reaction_1.jpg' tidak ditemukan. Membuat placeholder 100x100."
         )
         monkey_img_1 = create_placeholder_image(
             "AHA!", color=(0, 200, 50)
-        )  
+        )
     if monkey_img_2 is None:
         print(
             "Peringatan: 'monkey_reaction_2.jpg' tidak ditemukan. Membuat placeholder 100x100."
         )
         monkey_img_2 = create_placeholder_image(
             "NO_REACTION", color=(150, 150, 150)
-        )  
+        )
     if monkey_img_3 is None:
         print(
             "Peringatan: 'monkey_reaction_3.jpg' tidak ditemukan. Membuat placeholder 100x100."
         )
         monkey_img_3 = create_placeholder_image(
             "SHOCK", color=(200, 50, 0)
-        )  
+        )
 
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
@@ -194,19 +102,19 @@ def main():
                     mp_drawing.draw_landmarks(
                         frame_bgr, hand_landmarks, mp_hands.HAND_CONNECTIONS
                     )
-                    gesture = recognize_gesture(hand_landmarks)
+                    gesture = recognize_gesture(hand_landmarks) 
                     if gesture != "NONE":
                         detected_gestures.append(gesture)
 
             current_gesture = "NONE"
             if num_hands_detected == 0:
-                current_gesture = "NO_REACTION"  
+                current_gesture = "NO_REACTION"
             elif detected_gestures.count("FIST") >= 2:
-                current_gesture = "SHOCK"  
+                current_gesture = "SHOCK"
             elif "AHA!" in detected_gestures:
-                current_gesture = "AHA!"  
+                current_gesture = "AHA!"
             elif "THINKING" in detected_gestures:
-                current_gesture = "THINKING"  
+                current_gesture = "THINKING"
             elif "FIST" in detected_gestures:
                 current_gesture = "FIST"
 
@@ -216,13 +124,14 @@ def main():
             pos_x = frame_width - overlay_width - 20
             pos_y = 20
 
-            if current_gesture == "SHOCK":  
+    
+            if current_gesture == "SHOCK":
                 frame_bgr = overlay_image_alpha(frame_bgr, monkey_img_3, pos_x, pos_y)
-            elif current_gesture == "NO_REACTION":  
+            elif current_gesture == "NO_REACTION":
                 frame_bgr = overlay_image_alpha(frame_bgr, monkey_img_2, pos_x, pos_y)
-            elif current_gesture == "AHA!":  
+            elif current_gesture == "AHA!":
                 frame_bgr = overlay_image_alpha(frame_bgr, monkey_img_1, pos_x, pos_y)
-            elif current_gesture == "THINKING":  
+            elif current_gesture == "THINKING":
                 frame_bgr = overlay_image_alpha(frame_bgr, monkey_img, pos_x, pos_y)
 
             cv2.putText(
