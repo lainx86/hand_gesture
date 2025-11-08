@@ -15,25 +15,25 @@ def main():
 
     new_overlay_size = (100, 100)
 
-    monkey_img = cv2.imread("monkey_reaction.jpg", cv2.IMREAD_COLOR)
+    monkey_img = cv2.imread("assets/Monkey_reaction.jpg", cv2.IMREAD_COLOR)
     if monkey_img is not None:
         monkey_img = cv2.resize(
             monkey_img, new_overlay_size, interpolation=cv2.INTER_AREA
         )
 
-    monkey_img_1 = cv2.imread("monkey_reaction_1.jpg", cv2.IMREAD_COLOR)
+    monkey_img_1 = cv2.imread("assets/Monkey_reaction_1.jpg", cv2.IMREAD_COLOR)
     if monkey_img_1 is not None:
         monkey_img_1 = cv2.resize(
             monkey_img_1, new_overlay_size, interpolation=cv2.INTER_AREA
         )
 
-    monkey_img_2 = cv2.imread("monkey_reaction_2.jpg", cv2.IMREAD_COLOR)
+    monkey_img_2 = cv2.imread("assets/Monkey_reaction_2.jpg", cv2.IMREAD_COLOR)
     if monkey_img_2 is not None:
         monkey_img_2 = cv2.resize(
             monkey_img_2, new_overlay_size, interpolation=cv2.INTER_AREA
         )
 
-    monkey_img_3 = cv2.imread("monkey_reaction_3.jpg", cv2.IMREAD_COLOR)
+    monkey_img_3 = cv2.imread("assets/Monkey_reaction_3.jpg", cv2.IMREAD_COLOR)
     if monkey_img_3 is not None:
         monkey_img_3 = cv2.resize(
             monkey_img_3, new_overlay_size, interpolation=cv2.INTER_AREA
