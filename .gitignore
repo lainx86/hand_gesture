@@ -1,1 +1,43 @@
-__pycache__
+# --- Project-Specific Files ---
+# Abaikan file data CSV yang dibuat oleh data_collector.py
+gesture_data.csv
+
+# Abaikan model AI yang sudah dilatih
+gesture_model.pkl
+
+
+# --- Python ---
+# Virtual environments
+venv/
+env/
+.venv/
+*.venv
+
+# Cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+
+# --- OS / Editor ---
+# macOS
+.DS_Store
+._*
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Log files
+*.log
