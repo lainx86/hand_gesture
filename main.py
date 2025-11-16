@@ -26,7 +26,7 @@ except Exception as e:
 
 def main():
     print("Memuat dan mengubah ukuran gambar overlay...")
-    new_overlay_size = (100, 100)
+    new_overlay_size = (200, 200)
 
     monkey_img = cv2.imread("assets/Monkey_reaction.jpg", cv2.IMREAD_COLOR)
     if monkey_img is not None:
