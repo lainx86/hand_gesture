@@ -28,7 +28,6 @@ def create_placeholder_image(text, size=(100, 100), color=(0, 100, 0)):
 
     return image
 
-
 def overlay_image_alpha(img_bg, img_overlay, x, y):
     try:
         h_bg, w_bg = img_bg.shape[:2]
